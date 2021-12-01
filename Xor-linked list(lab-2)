@@ -1,0 +1,102 @@
+#include<bits/stdc++.h>
+#include<cinttypes>
+using namespace std;
+class Node{
+    public:int data;
+    Node *xnode;
+};
+
+Node *Xor(Node *x,Node *y)
+{
+    return reinterpret_cast<Node*>(reinterpret_cast<uintptr_t>(x)^reinterpret_cast<uintptr_t>(y));
+}
+
+void insert(Node** head_ref,int data)
+{
+    Node* new_node=new Node();
+    new_node->data=data;
+    new_node->xnode=*head_ref;
+    if(*head_ref!=NULL)
+    {
+        (*head_ref)->xnode=Xor(new_node,(*head_ref)->xnode);
+    }
+*head_ref=new_node;
+}
+
+Node* deletion(Node **head)
+{
+  if(*head == NULL)
+  {
+    cout<<"The list is empty";
+  }
+  else 
+  {
+    Node *curr = *head;
+    Node *prev= NULL;
+    Node *next;
+    while(Xor(prev,curr->xnode)!=NULL){
+      next=Xor(prev,curr->xnode);
+      prev=curr;
+      curr=next;
+    }
+    if(prev!=NULL)
+    {
+      prev->xnode=Xor(Xor(prev->xnode,curr),NULL);
+
+    }
+    else
+    *head=NULL;
+    delete curr;
+
+
+  }
+  return *head;
+}
+void printlist(Node* head)
+{
+    Node *curr = head;
+    Node *prev = NULL;
+    Node *next;
+    cout<<"The nodes of the Linked Lists are:\n";
+    while(curr!=NULL)
+{
+    cout<<curr->data<<" ";
+    next=Xor(prev,curr->xnode);
+    prev=curr;
+    curr=next;
+
+}
+}
+int main(){
+  int choice;
+  Node*head=NULL;
+do{
+cout<<"\nEnter your choice"<<endl;
+cout<<"Enter 1. for insertion at the beginning"<<endl;
+cout<<"Enter 2. for deletion at the end"<<endl;
+cout<<"Enter 3. for displaying "<<endl;
+cin>>choice;
+
+switch(choice)
+{
+  case 1: int data;
+          cout<<"Enter the value to be inserted"<<endl;
+          cin>>data;
+          insert(&head,data);
+          break;
+  case 2:deletion(&head);
+          break;
+  case 3:printlist(head);
+         break;
+}
+
+
+}while(choice!=4);
+
+
+
+ return 0; 
+}
+
+
+
